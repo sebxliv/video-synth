@@ -1,0 +1,4 @@
+aubio==0.4.8
+numpy==1.15.4
+PyAudio==0.2.11
+pygame==1.9.4
