@@ -13,6 +13,8 @@ import time
 
 import argparse
 
+SCREEN_SIZE = (1024, 768)
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-input", required=False, type=int, help="Audio Input Device")
 parser.add_argument("-f", action="store_true", help="Run in Fullscreen Mode")
@@ -29,11 +31,11 @@ if not args.input:
 pygame.init()
 
 if args.f:
-    screenWidth, screenHeight = 1024, 768
+    screenWidth, screenHeight = SCREEN_SIZE
     screen = pygame.display.set_mode((screenWidth, screenHeight), pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
 
 else:
-    screenWidth, screenHeight = 800, 800
+    screenWidth, screenHeight = SCREEN_SIZE
     screen = pygame.display.set_mode((screenWidth, screenHeight))
 
 white = (255, 255, 255)
@@ -98,13 +100,25 @@ def draw_pygame():
             circleList.append(newCircle)
 
         screen.fill(black)
+
+        img = pygame.image.load('images/1.jpg')
+        img_size = img.get_size()
+        # proportions = img_size[0] / img_size[1]
+        # if img_size[0] < SCREEN_SIZE[0]:
+        img = pygame.transform.scale(img, SCREEN_SIZE)
+        screen.blit(img, (0,0))
+
+        surface = pygame.Surface(SCREEN_SIZE)
+
         for place, circle in enumerate(circleList):
             if circle.size < 1:
                 circleList.pop(place)
             else:
-                pygame.draw.circle(screen, circle.color, (circle.x, circle.y), circle.size)
+                pygame.draw.circle(surface, circle.color, (circle.x, circle.y), circle.size)
             circle.shrink()
-        
+
+        surface.set_alpha(128)
+        screen.blit(surface, (0,0))
         pygame.display.flip()
         clock.tick(90)
 
