@@ -1,5 +1,4 @@
 import os
-import sys
 import random
 
 import pyaudio
@@ -7,7 +6,6 @@ import numpy as np
 import aubio
 
 import pygame
-import random
 
 from threading import Thread
 

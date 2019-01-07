@@ -1,5 +1,4 @@
 import os
-import sys
 import random
 
 import pyaudio
@@ -7,7 +6,6 @@ import numpy as np
 import aubio
 
 import pygame
-import random
 
 from threading import Thread
 
@@ -17,7 +15,7 @@ import time
 import argparse
 
 SCREEN_SIZE = (1024, 768)
-CHANGE_IMAGE_LIKENESS = 0.1
+CHANGE_IMAGE_LIKENESS = 0.3
 COLORS = [
 #  (229, 244, 227),
    (93, 169, 233),
@@ -33,7 +31,7 @@ WORK_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGES_DIR = os.path.join(WORK_DIR, 'images')
 
 IMAGES = os.listdir(IMAGES_DIR)
-IMAGES = list(filter(lambda x: os.path.splitext(x)[1] in ['.jpg', '.png', '.jpeg', '.tiff'], IMAGES))
+IMAGES = list(filter(lambda x: os.path.splitext(x)[1] in ['.jpg', '.png', '.jpeg', '.tiff', '.webp'], IMAGES))
 IMAGES_TOTAL = len(IMAGES)
 
 parser = argparse.ArgumentParser()
@@ -41,7 +39,7 @@ parser.add_argument("-input", required=False, type=int, help="Audio Input Device
 parser.add_argument("-f", action="store_true", help="Run in Fullscreen Mode")
 args = parser.parse_args()
 
-if not args.input:
+if args.input != 0 and not args.input:
     print("No input device specified. Printing list of input devices now: ")
     p = pyaudio.PyAudio()
     for i in range(p.get_device_count()):
@@ -103,7 +101,7 @@ onset = aubio.onset("default", win_s, hop_s, samplerate)
 
 q = queue.Queue()
 
-def draw_pygame():
+def draw_it_baby():
     running = True
     current_image = os.path.join(IMAGES_DIR, random.choice(IMAGES))
 
@@ -168,7 +166,7 @@ t = Thread(target=get_onsets, args=())
 t.daemon = True
 t.start()
 
-draw_pygame()
+draw_it_baby()
 stream.stop_stream()
 stream.close()
 pygame.display.quit()
