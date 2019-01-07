@@ -1,5 +1,8 @@
-import pyaudio
+import os
 import sys
+import random
+
+import pyaudio
 import numpy as np
 import aubio
 
@@ -13,7 +16,12 @@ import time
 
 import argparse
 
+WORK_DIR = os.path.dirname(os.path.abspath('.'))
+IMAGES_DIR = os.path.join(WORK_DIR, 'images')
 SCREEN_SIZE = (1024, 768)
+
+IMAGES = os.listdir(IMAGES_DIR)
+IMAGES_TOTAL = len(IMAGES)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-input", required=False, type=int, help="Audio Input Device")
@@ -84,6 +92,8 @@ q = queue.Queue()
 
 def draw_pygame():
     running = True
+    current_image = os.path.join(IMAGES_DIR, random.choice(IMAGES))
+
     while running:
         key = pygame.key.get_pressed()
 
@@ -101,7 +111,7 @@ def draw_pygame():
 
         screen.fill(black)
 
-        img = pygame.image.load('images/1.jpg')
+        img = pygame.image.load(current_image)
         img_size = img.get_size()
         # proportions = img_size[0] / img_size[1]
         # if img_size[0] < SCREEN_SIZE[0]:
