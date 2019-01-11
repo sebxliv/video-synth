@@ -3,5 +3,7 @@ Optional create a virtualenv with python3.7 (recommended)
 brew install portaudio
 pip install -r requirements.txt
 
-
-https://avbin.github.io/AVbin/Download.html
+# NOT YET
+# install Cairo  manually
+# wget https://github.com/pygobject/pycairo/releases/download/v1.18.0/pycairo-1.18.0.tar.gz
+# https://avbin.github.io/AVbin/Download.html

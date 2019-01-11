@@ -7,6 +7,8 @@ import aubio
 
 import pygame
 
+from Flake import Flake as FlakeGenerator
+
 from threading import Thread
 
 import queue
@@ -25,7 +27,7 @@ COLORS = [
 ]
 CIRCLE_SIZE_MIN = 0.1
 CIRCLE_SIZE_MAX = 0.5
-TOLERANCE = 0.1
+TOLERANCE = 0.05
 
 WORK_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGES_DIR = os.path.join(WORK_DIR, 'images')
@@ -67,11 +69,32 @@ class Circle(object):
         self.color = color
         self.size = size
 
-    def shrink(self):
+    def update(self):
         self.size -= 3
 
+    def draw(self, surface):
+        pygame.draw.circle(surface, self.color, (self.x, self.y), self.size)
 
-circleList = []
+class Flake(object):
+    def __init__(self, x, y, color, size):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.size = size
+        self.nv = random.randint(2, 10)
+
+    def update(self):
+        self.size -= 3
+
+    def draw(self, surface):
+        rad = self.size
+        flake = FlakeGenerator(self.nv, self.size, (self.x, self.y))
+        flake.colorful = True
+        flake.outlined = True
+        flake.draw(3, surface)
+
+
+objectList = []
 
 # initialise pyaudio
 p = pyaudio.PyAudio()
@@ -116,9 +139,9 @@ def draw_it_baby():
 
         if not q.empty():
             b = q.get()
-            newCircle = Circle(random.randint(0, screenWidth), random.randint(0, screenHeight),
+            newObject = Flake(random.randint(0, screenWidth), random.randint(0, screenHeight),
                                random.choice(COLORS), random.randint(int(screenWidth * CIRCLE_SIZE_MIN), int(screenWidth * CIRCLE_SIZE_MAX)))
-            circleList.append(newCircle)
+            objectList.append(newObject)
 
             if random.random() < CHANGE_IMAGE_LIKENESS:
                 current_image = os.path.join(IMAGES_DIR, random.choice(IMAGES))
@@ -134,12 +157,12 @@ def draw_it_baby():
 
         surface = pygame.Surface(SCREEN_SIZE)
 
-        for place, circle in enumerate(circleList):
-            if circle.size < 1:
-                circleList.pop(place)
+        for place, obj in enumerate(objectList):
+            if obj.size < 1:
+                objectList.pop(place)
             else:
-                pygame.draw.circle(surface, circle.color, (circle.x, circle.y), circle.size)
-            circle.shrink()
+                obj.draw(surface)
+            obj.update()
 
         surface.set_alpha(128)
         screen.blit(surface, (0,0))
